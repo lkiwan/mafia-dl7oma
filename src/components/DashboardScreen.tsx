@@ -16,9 +16,8 @@ import {
 } from 'lucide-react'
 import { useMafiaGame } from '../game/useMafiaGame'
 import { ROLE_META } from '../game/types'
-import { GameTable } from './GameTable'
 import { FlipCardView, TableCard } from './PlayerCard'
-import { ellipsePos, useCountdown, fmtClock, buzz } from '../lib/utils'
+import { useCountdown, fmtClock, buzz } from '../lib/utils'
 
 /* ---------------- decorative phase tint ---------------- */
 function TintLayer() {
@@ -77,11 +76,12 @@ function BoulisFlash() {
         ) : (
           <Shield className="h-24 w-24 text-zinc-100 animate-flicker" />
         )}
-        <h2 className={`mt-3 font-darija font-black text-4xl tracking-widest ${isMafia ? 'text-zinc-100' : 'text-zinc-100'}`}>
-          {isMafia ? 'ما فيّا!' : 'بريي!'}
+        <p className="mt-2 font-darija text-xs font-bold tracking-[0.3em] text-zinc-300/80 uppercase">نتيجة البوليس</p>
+        <h2 className={`mt-1 font-darija font-black text-4xl tracking-widest ${isMafia ? 'text-zinc-100' : 'text-zinc-100'}`}>
+          {isMafia ? 'هادا مافيا!' : 'هادا بريء!'}
         </h2>
         <p className="mt-2 font-darija text-base font-bold text-zinc-200/90">
-          {isMafia ? 'سيفت ليّا يا راد بدمّك شي نهار.' : 'هداك بري، ما عندو تا جناب.'}
+          {isMafia ? 'هادا مع العصابة، يدو فيها الدم.' : 'هادا بريء، خاطيه الصداع.'}
         </p>
       </motion.div>
       <button
@@ -92,7 +92,7 @@ function BoulisFlash() {
         }}
         className="btn-gold mt-6 w-full !py-5 text-lg"
       >
-        فهمت. زيد
+        فهمت، دوز.
       </button>
     </motion.div>
   )
@@ -123,7 +123,7 @@ function EliminationOverlay() {
       style={{ background: 'radial-gradient(circle at 50% 42%, rgba(180,60,30,.22), rgba(0,0,0,.92) 70%)' }}
     >
       <p className="relative z-10 mb-4 font-darija text-sm font-bold tracking-[0.3em] text-zinc-400 uppercase">
-        الجروب قال:
+         الحومة قررات:
       </p>
 
       <div className="relative z-10 w-[min(58vw,230px)] aspect-[3/4.4]">
@@ -145,14 +145,14 @@ function EliminationOverlay() {
               animate={{ opacity: 1, y: 0 }}
               className="flex flex-col items-center gap-3"
             >
-              <h3 className="font-darija font-black text-3xl leading-snug text-zinc-100">
-                {lastEliminated.name} كان: <span className={meta.color}>{meta.label}</span>
-              </h3>
-              <p className="font-darija text-sm font-bold text-zinc-400">
-                {lastEliminated.role === 'EISSABA'
-                  ? 'را كان مافيا مع قادر!'
-                  : 'مساكين... را كان سمح. الله يرحمو.'}
-              </p>
+<h3 className="font-darija font-black text-3xl leading-snug text-zinc-100">
+                  {lastEliminated.name} الدور ديالو كان: <span className={meta.color}>{meta.label}</span>
+                </h3>
+                <p className="font-darija text-sm font-bold text-zinc-400">
+                  {lastEliminated.role === 'EISSABA'
+                    ? 'راه كان مع العصابة، تهنينا منو!'
+                    : 'مسكين... مشا فيها ظلم. كان غير ولد الحومة.'}
+                </p>
               <button
                 type="button"
                 onClick={() => {
@@ -161,7 +161,7 @@ function EliminationOverlay() {
                 }}
                 className="btn-blood w-full !py-4 text-lg"
               >
-                <Check className="mr-2 inline h-5 w-5" /> سرّرنا
+                <Check className="mr-2 inline h-5 w-5" /> كمّل اللعب
               </button>
             </motion.div>
           )}
@@ -239,8 +239,8 @@ export default function DashboardScreen() {
         stepDots={stepDots}
         icon={<Skull className="h-9 w-9 text-blood" />}
         prompt="فيّق العصابة."
-        sub="المافيا كاتختار لي غادي يموت هيت الليل. ديرسو على الكرطة ديالو."
-        status={target ? `الترديح: ${target.name}` : 'ما بغاش يختار لمّا'}
+        sub="العصابة غتختار شكون يموت هاد الليلة. كليكي على الكارطة ديالو."
+        status={target ? `الضحية هي: ${target.name}` : 'ما ختارو حد'}
         wake={eissaba.map((x) => (
           <span key={x.id} className="rounded-full bg-blood/15 px-2.5 py-0.5 font-darija text-xs font-black text-blood ring-1 ring-blood/30">
             {x.name}
@@ -256,7 +256,7 @@ export default function DashboardScreen() {
           }}
           className="btn-blood w-full text-lg"
         >
-          <Check className="mr-2 inline h-5 w-5" /> زيد الترديح
+          <Check className="mr-2 inline h-5 w-5" /> أكّد الضربة
         </button>
       </NightPanel>
     )
@@ -266,9 +266,9 @@ export default function DashboardScreen() {
       <NightPanel
         stepDots={stepDots}
         icon={<Search className="h-9 w-9 text-gold" />}
-        prompt="فيّق البوليس."
-        sub="يفّتش والو ف اللاعب. دوب على الكرطة باش تشوف الجواب."
-        status={nightActions.targetBoulis ? `فتّشيت على: ${players.find((p) => p.id === nightActions.targetBoulis)?.name}` : 'باقي ما فتّش'}
+prompt="فيّق البوليس."
+        sub="البوليس غيقلب شي واحد. ورّك على الكارطة باش تشوف واش بريء ولا عصابة."
+        status={nightActions.targetBoulis ? `البوليس قلب: ${players.find((p) => p.id === nightActions.targetBoulis)?.name}` : 'باقي ما قلب حد'}
         wake={
           boulis ? (
             <span className="rounded-full bg-gold/15 px-2.5 py-0.5 font-darija text-xs font-black text-gold ring-1 ring-gold/30">
@@ -277,7 +277,7 @@ export default function DashboardScreen() {
           ) : null
         }
       >
-        <p className="font-darija text-xs font-bold text-zinc-500">ملي تخرج الفلاش، تضغط "فهمت" باش تمشي للطبيب.</p>
+        <p className="font-darija text-xs font-bold text-zinc-500">ملي تشوف النتيجة، ورّك على "فهمت" باش تدوز للطبيب.</p>
       </NightPanel>
     )
   } else if (phase === 'NIGHT_PHASE' && isTbibNight) {
@@ -289,8 +289,8 @@ export default function DashboardScreen() {
         stepDots={stepDots}
         icon={<Stethoscope className="h-9 w-9 text-heal" />}
         prompt="فيّق الطبيب."
-        sub="الطبيب غيجلّي سلي خاصو. يدير الكور لي ما بغاتشي باش يبقى حيّ."
-        status={target ? `غادي يجلّي: ${target.name}` : 'ما ختر باش يجلّي'}
+        sub="الطبيب غيختار شكون يعتق هاد الليلة. كليكي على الكارطة ديال لي بغا يداوي."
+        status={target ? `الطبيب عتق: ${target.name}` : 'ما عتق حد'}
         wake={
           tbib ? (
             <span className="rounded-full bg-heal/15 px-2.5 py-0.5 font-darija text-xs font-black text-heal ring-1 ring-heal/30">
@@ -299,7 +299,7 @@ export default function DashboardScreen() {
           ) : null
         }
       >
-        <p className="font-darija text-xs font-bold text-zinc-500">كي يدير، غادي يجي ليل الآخر.</p>
+        <p className="font-darija text-xs font-bold text-zinc-500">سالا الليل، دوز للصباح.</p>
       </NightPanel>
     )
   } else if (phase === 'NIGHT_PHASE' && isDawn) {
@@ -307,12 +307,12 @@ export default function DashboardScreen() {
       <NightPanel
         stepDots={stepDots}
         icon={<Sunrise className="h-9 w-9 text-amber-400" />}
-        prompt="صباح الخير يا الحومة..."
-        sub="القمر لمع فيه. جيب الشمس ليبور لكلشي."
+        prompt="صباح الخير أ الحومة..."
+        sub="الليل مشى والنهار طلع. فيّق كلشي!"
         status=""
       >
         <button type="button" onClick={() => { buzz(40); endNight() }} className="btn-gold w-full !py-5 text-lg">
-          <Sun className="mr-2 inline h-5 w-5" /> طلّع نهار
+          <Sun className="mr-2 inline h-5 w-5" /> طلّع النهار
         </button>
       </NightPanel>
     )
@@ -324,25 +324,25 @@ export default function DashboardScreen() {
         animate={{ opacity: 1, y: 0 }}
         className="flex flex-col items-center gap-2 text-center"
       >
-        <p className="font-darija text-xs font-bold tracking-[0.3em] text-yellow-500/90 uppercase">تقرير الصباح</p>
+        <p className="font-darija text-xs font-bold tracking-[0.3em] text-yellow-500/90 uppercase">آش وقع بالليل</p>
         {dead?.saved ? (
           <>
-            <p className="font-darija font-black text-3xl text-heal">الطبيب عوّدو!</p>
-            <p className="font-darija text-sm font-bold text-zinc-300">{players.find((p) => p.id === dead.victimId)?.name} را عايش، والو ما حصل هاد ليلة.</p>
+            <p className="font-darija font-black text-3xl text-heal">الطبيب عتق الموقف!</p>
+            <p className="font-darija text-sm font-bold text-zinc-300">{players.find((p) => p.id === dead.victimId)?.name} منع من الموت، حتى واحد ما مات هاد الليلة.</p>
           </>
         ) : dead?.victimName ? (
           <>
-            <p className="font-darija font-black text-4xl text-blood">{dead.victimName} مات!</p>
-            <p className="font-darija text-sm font-bold text-zinc-300">الميت عندو ف قلبو: {dead.victimRole ? ROLE_META[dead.victimRole].label : ''}</p>
+            <p className="font-darija font-black text-4xl text-blood">{dead.victimName} تصفّات ليه!</p>
+            <p className="font-darija text-sm font-bold text-zinc-300">الدور ديالو كان: {dead.victimRole ? ROLE_META[dead.victimRole].label : ''}</p>
           </>
         ) : (
           <>
-            <p className="font-darija font-black text-3xl text-heal">والو ما حصل</p>
-            <p className="font-darija text-sm font-bold text-zinc-300">كلشي قايم. صباح الخير!</p>
+            <p className="font-darija font-black text-3xl text-heal">حتى حاجة ما وقعات هاد الليلة.</p>
+            <p className="font-darija text-sm font-bold text-zinc-300">كلشي فايق. صباح الخير!</p>
           </>
         )}
         <button type="button" onClick={() => { buzz(20); advanceFromReport() }} className="btn-blood font-darija mt-1 w-full !py-4 text-lg">
-          <Vote className="mr-2 inline h-5 w-5" /> بدا البروتيست
+          <Vote className="mr-2 inline h-5 w-5" /> بدا المحاكمة
         </button>
       </motion.div>
     )
@@ -351,7 +351,7 @@ export default function DashboardScreen() {
     panel = (
       <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
-          <p className="font-darija text-xs font-bold tracking-[0.25em] text-red-400 uppercase">الفوت · الحومة كاتصوّت</p>
+          <p className="font-darija text-xs font-bold tracking-[0.25em] text-red-400 uppercase">التصويت · الحومة غتصوّت</p>
           <div className="flex items-center gap-2">
             <Timer className={`h-5 w-5 ${zero ? 'text-blood animate-pulse' : 'text-red-400'}`} />
             <span className={`font-grit text-2xl tabular-nums ${zero ? 'text-blood animate-pulse' : 'text-red-300'}`}>
@@ -368,12 +368,12 @@ export default function DashboardScreen() {
         </div>
         <p className="font-darija text-xs font-bold text-zinc-400">
           {zero
-            ? 'وقت سالى! حاكم، دير على الكرطة ديال لي غادي يتعدّم.'
-            : 'هدرو بينا بازيم، ملي تسيفدو صلي على لايا باش يخرج. دوب على الكرطة.'}
+            ? 'الوقت سالا! أ الحاكم، كليكي على الكارطة ديال لي غادي تجريو عليه.'
+            : 'تناقشو بيناتكم، وملي تتفاهمو كليكي على الكارطة ديال لي بغيتو تخرجوه من الحومة.'}
         </p>
         <div className="flex items-center justify-between gap-2">
           <span className="flex-1 truncate rounded-xl bg-white/5 px-3 py-2 font-darija text-sm font-bold text-zinc-200">
-            {voteChoice ? `صوتو لـ: ${players.find((p) => p.id === voteChoice)?.name}` : 'ما صوتّو لمّا'}
+            {voteChoice ? `صوتو على: ${players.find((p) => p.id === voteChoice)?.name}` : 'ما صوتو على حد'}
           </span>
           <button
             type="button"
@@ -406,9 +406,9 @@ export default function DashboardScreen() {
           </span>
           <button
             type="button"
-            aria-label="عاود من لّول"
+            aria-label="عاود الطرح"
             onClick={() => {
-              if (window.confirm('تبغي تبدّل اللعبة من لّول؟')) resetGame()
+              if (window.confirm('واش متأكد بغيتي تعاود الطرح من الزيرو؟')) resetGame()
             }}
             className="rounded-full bg-white/5 p-1.5 text-zinc-500 active:scale-90 transition-transform"
           >
@@ -418,44 +418,40 @@ export default function DashboardScreen() {
       </div>
 
       <div className="relative z-10 flex items-center justify-center gap-3 px-4 text-[11px] font-darija font-bold text-zinc-500">
-        <span className="text-blood">العصابة حيّين: {mafiaAlive}</span>
+        <span className="text-blood">العصابة لي باقين: {mafiaAlive}</span>
         <span>·</span>
-        <span className="text-zinc-300">ولاد الحومة: {townAlive}</span>
+        <span className="text-zinc-300">ولاد الحومة لي باقين: {townAlive}</span>
       </div>
 
-      {/* god table */}
-      <div className="relative z-10 mt-1 flex min-h-0 flex-1 items-start justify-center overflow-hidden px-3">
-        <div className="w-full max-w-[min(94vw,420px)]">
-          <GameTable>
-            {deck.map((p, i) => {
-              // size ladder so cards stay readable as the lobby grows
-              const cw = deck.length <= 8 ? 17 : deck.length <= 10 ? 15 : deck.length <= 12 ? 14 : 13
-              const ch = cw * 1.36
-              const pos = ellipsePos(deck.length, i, { rx: 36, ry: 35 })
-              return (
-                <div
-                  key={p.id}
-                  className="absolute"
-                  style={{ left: pos.left, top: pos.top, width: cw, height: ch }}
-                >
-                  <TableCard
-                    player={p}
-                    role={p.role}
-                    facing="front"
-                    number={i + 1}
-                    dead={p.isDead}
-                    crosshair={phase === 'NIGHT_PHASE' && nightActions.targetEissaba === p.id}
-                    shield={phase === 'NIGHT_PHASE' && nightActions.targetTbib === p.id}
-                    selected={phase === 'VOTING' && voteChoice === p.id}
-                    tilt={pos.rotate * 0.35}
-                    interactive={(isMafiaNight || isBoulisNight || isTbibNight || phase === 'VOTING') && !p.isDead}
-                    onTap={() => onCardTap(p.id)}
-                    className="h-full w-full"
-                  />
-                </div>
-              )
-            })}
-          </GameTable>
+      {/* god grid — clean & readable, no table picture */}
+      <div className="relative z-10 mt-1 flex min-h-0 flex-1 flex-col px-4">
+        <div className="scrollbar-hide min-h-0 flex-1 overflow-y-auto pb-2 pr-0.5">
+          <div className="grid grid-cols-3 gap-2.5">
+            {deck.map((p, i) => (
+              <motion.div
+                key={p.id}
+                layout
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.25 }}
+                className="aspect-[3/4.4] w-full"
+              >
+                <TableCard
+                  player={p}
+                  role={p.role}
+                  facing="front"
+                  number={i + 1}
+                  dead={p.isDead}
+                  crosshair={phase === 'NIGHT_PHASE' && nightActions.targetEissaba === p.id}
+                  shield={phase === 'NIGHT_PHASE' && nightActions.targetTbib === p.id}
+                  selected={phase === 'VOTING' && voteChoice === p.id}
+                  interactive={(isMafiaNight || isBoulisNight || isTbibNight || phase === 'VOTING') && !p.isDead}
+                  onTap={() => onCardTap(p.id)}
+                  className="h-full w-full"
+                />
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -512,7 +508,7 @@ function NightPanel({
       </div>
       {wake && (
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="font-darija text-[10px] font-black tracking-widest text-zinc-500 uppercase">كيسحّيو:</span>
+          <span className="font-darija text-[10px] font-black tracking-widest text-zinc-500 uppercase">شكون فايق دابا:</span>
           {wake}
         </div>
       )}

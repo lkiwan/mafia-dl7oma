@@ -37,14 +37,28 @@ export default function PassPlayScreen() {
     <motion.div
       initial={{ opacity: 0, scale: 0.94 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="absolute inset-0 z-40 flex h-full flex-col items-center justify-center gap-5 bg-night px-8"
-      style={{
-        background:
-          'radial-gradient(circle at 50% 40%, rgba(234,179,8,.10), rgba(0,0,0,0) 55%), radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0,0,0,.8))',
-      }}
+      className="absolute inset-0 z-40 flex h-full flex-col items-center justify-center gap-5 overflow-hidden px-8"
     >
+      {/* table picture background */}
+      <img
+        src="/img/table-bg.avif"
+        alt=""
+        aria-hidden
+        draggable={false}
+        className="pointer-events-none absolute inset-0 h-full w-full select-none object-cover"
+      />
+      <div aria-hidden className="pointer-events-none absolute inset-0 bg-night/55" />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            'radial-gradient(circle at 50% 40%, rgba(234,179,8,.10), rgba(0,0,0,0) 55%), radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0,0,0,.8))',
+        }}
+      />
+
       <motion.div
-        className="relative flex h-24 w-24 items-center justify-center rounded-3xl bg-gold/10 ring-2 ring-gold/60 shadow-glowGold"
+        className="relative z-10 flex h-24 w-24 items-center justify-center rounded-3xl bg-gold/10 ring-2 ring-gold/60 shadow-glowGold"
         animate={{ scale: [1, 1.05, 1] }}
         transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
       >
@@ -52,12 +66,12 @@ export default function PassPlayScreen() {
         <span className="absolute inset-0 animate-pulseRing rounded-3xl ring-2 ring-gold/40" />
       </motion.div>
 
-      <div className="text-center">
+      <div className="relative z-10 text-center">
         <h2 className="font-darija font-black text-2xl tracking-wider text-zinc-100">تيلي عند الحاكم</h2>
         <p className="mt-2 font-darija text-base font-bold text-zinc-500">دابا كلشي را كناوين الأدوار.</p>
       </div>
 
-      <p className="font-darija text-2xl font-black text-gold">{teller?.name ?? 'الحاكم'}</p>
+      <p className="relative z-10 font-darija text-2xl font-black text-gold">{teller?.name ?? 'الحاكم'}</p>
 
       <button
         type="button"
@@ -65,11 +79,21 @@ export default function PassPlayScreen() {
           buzz([40, 40, 60])
           unlockDashboard()
         }}
-        className="btn-blood font-darija mt-2 w-full !py-5 text-lg"
+        className="relative z-10 btn-horror group w-full max-w-[280px] overflow-hidden px-5 py-3 text-center"
       >
-        فتّح لابو
+        <span
+          aria-hidden
+          className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+        />
+        <span className="text-horror horror-flicker relative block font-darija text-xl font-black tracking-[0.18em]">
+          فتّح لابو
+        </span>
+        <span
+          aria-hidden
+          className="absolute bottom-1.5 left-1/2 h-px w-12 -translate-x-1/2 bg-gradient-to-r from-transparent via-blood/50 to-transparent"
+        />
       </button>
-      <p className="text-center font-darija text-xs font-semibold text-zinc-600">
+      <p className="relative z-10 text-center font-darija text-xs font-semibold text-zinc-600">
         بيتا ف الكولة، تيلي ليّا. ما تيشريش.
       </p>
     </motion.div>
