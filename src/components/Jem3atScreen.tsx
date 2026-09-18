@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Crown, Pencil, Plus, Trash2, UserRound, Users, Swords } from 'lucide-react'
+import { ArrowLeft, Crown, Pencil, Plus, Trash2, UserRound, Users, Swords } from 'lucide-react'
 import { useMafiaGame } from '../game/useMafiaGame'
 import { MIN_PLAYERS } from '../game/types'
 import { buzz } from '../lib/utils'
@@ -12,6 +12,7 @@ export default function Jem3atScreen() {
   const setPlayerName = useMafiaGame((s) => s.setPlayerName)
   const setTeller = useMafiaGame((s) => s.setTeller)
   const startGame = useMafiaGame((s) => s.startGame)
+  const goHome = useMafiaGame((s) => s.goHome)
 
   const [name, setName] = useState('')
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -64,6 +65,18 @@ export default function Jem3atScreen() {
         transition={{ duration: 0.5 }}
         className="relative z-10 px-6 pt-8 pb-4 text-center"
       >
+        <button
+          type="button"
+          onClick={() => {
+            buzz([20, 30])
+            goHome()
+          }}
+          aria-label="رجع لّلّول"
+          title="رجع لّلّول"
+          className="absolute left-4 top-5 flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-zinc-300 transition-all hover:border-gold/50 hover:text-gold active:scale-90"
+        >
+          <ArrowLeft className="h-5 w-5" />
+        </button>
         <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-blood/20 ring-1 ring-blood/50 shadow-glowRed">
           <Swords className="h-7 w-7 text-blood" />
         </div>

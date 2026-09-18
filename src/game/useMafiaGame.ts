@@ -10,6 +10,7 @@ import type {
 } from './types'
 
 export interface GameStore extends GameState {
+  goHome: () => void
   goSetup: () => void
   addPlayer: (name: string) => void
   removePlayer: (id: string) => void
@@ -94,6 +95,8 @@ const base = (): GameState => {
 
 export const useMafiaGame = create<GameStore>()((set, get) => ({
   ...base(),
+
+  goHome: () => set({ phase: 'HOME' }),
 
   goSetup: () => set({ phase: 'SETUP' }),
 

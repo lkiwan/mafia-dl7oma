@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { motion } from 'framer-motion'
+import { motion, useMotionValue, useTransform } from 'framer-motion'
 import { Skull, Shield, Stethoscope, Home } from 'lucide-react'
 import { useMafiaGame } from '../game/useMafiaGame'
 import { buzz } from '../lib/utils'
@@ -8,6 +8,10 @@ const TITLE = "L'MAFIA"
 
 export default function HomeScreen() {
   const goSetup = useMafiaGame((s) => s.goSetup)
+
+  // slide-to-spin the mafia card
+  const dragX = useMotionValue(0)
+  const spin = useTransform(dragX, [-180, 180], [-34, 34])
 
   const motes = useMemo(
     () =>
@@ -96,10 +100,10 @@ export default function HomeScreen() {
           </motion.p>
         </div>
 
-        {/* ============ centered mafia card ============ */}
+        {/* ============ centered mafia card (slide to spin) ============ */}
         <motion.div
-          initial={{ opacity: 0, y: 40, rotate: 8 }}
-          animate={{ opacity: 1, y: 0, rotate: -4 }}
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.45, type: 'spring', stiffness: 140, damping: 16 }}
           className="relative flex items-center justify-center"
         >
@@ -115,11 +119,22 @@ export default function HomeScreen() {
             animate={{ opacity: [0.55, 0.9, 0.55], scale: [0.97, 1.03, 0.97] }}
             transition={{ duration: 3.4, repeat: Infinity, ease: 'easeInOut' }}
           />
-          <img
-            src="/img/card-mafia.png"
-            alt="L'Mafia d'L'Houma"
-            className="relative h-[36vh] max-h-[300px] w-auto object-contain drop-shadow-[0_26px_50px_rgba(0,0,0,.75)]"
-          />
+          <motion.div
+            drag="x"
+            dragSnapToOrigin
+            dragElastic={0.75}
+            whileDrag={{ scale: 1.06, filter: 'brightness(1.15)' }}
+            onDragStart={() => buzz(25)}
+            style={{ x: dragX, rotate: spin }}
+            className="touch-none relative cursor-grab active:cursor-grabbing"
+          >
+            <img
+              src="/img/card-mafia.png"
+              alt="L'Mafia d'L'Houma"
+              draggable={false}
+              className="h-[36vh] max-h-[300px] w-auto object-contain drop-shadow-[0_26px_50px_rgba(0,0,0,.75)]"
+            />
+          </motion.div>
         </motion.div>
 
         {/* ============ bottom ============ */}
