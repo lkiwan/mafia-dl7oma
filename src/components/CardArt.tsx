@@ -1,4 +1,3 @@
-import { useId } from 'react'
 import type { Role } from '../game/types'
 
 /* Placeholder vector portraits for every role. */
@@ -60,82 +59,14 @@ export function RoleArt({ role, className = '' }: { role: Role; className?: stri
   }
 }
 
-/* Ornate, pattern-heavy card back — a Moroccan khatam star + game name. */
+/* Card back — uses the supplied artwork image. */
 export function CardBackArt({ className = '' }: { className?: string }) {
-  const uid = useId().replace(/[:]/g, '')
-  const mesh = `mesh-${uid}`
-  const vignette = `vig-${uid}`
   return (
-    <svg viewBox="0 0 200 200" className={className} aria-label="L'Mafia d'L'Houma">
-      <defs>
-        <pattern id={mesh} width="16" height="16" patternUnits="userSpaceOnUse">
-          <path d="M0 8H16M8 0V16" stroke="#52525b" strokeWidth="0.75" opacity="0.55" />
-        </pattern>
-        <radialGradient id={vignette} cx="50%" cy="36%" r="80%">
-          <stop offset="0%" stopColor="#33141a" />
-          <stop offset="55%" stopColor="#190a10" />
-          <stop offset="100%" stopColor="#0a0507" />
-        </radialGradient>
-      </defs>
-
-      <rect width="200" height="200" fill={`url(#${vignette})`} />
-      <rect x="10" y="10" width="180" height="180" rx="14" fill="none" stroke="#b45309" strokeWidth="4" />
-      <rect x="16" y="16" width="168" height="168" rx="11" fill="none" stroke="#eab308" strokeWidth="1.5" opacity=".8" />
-      <rect x="12" y="12" width="176" height="176" rx="13" fill={`url(#${mesh})`} opacity=".5" />
-
-      {/* corner diamonds */}
-      <g fill="#eab308">
-        <path d="M26 30 L34 38 L26 46 L18 38 Z" />
-        <path d="M174 30 L182 38 L174 46 L166 38 Z" />
-        <path d="M26 154 L34 162 L26 170 L18 162 Z" />
-        <path d="M174 154 L182 162 L174 170 L166 162 Z" />
-      </g>
-
-      {/* khatam star medallion */}
-      <g transform="translate(100 108)">
-        <circle r="42" fill="none" stroke="#78350f" strokeWidth="2" />
-        <rect x="-34" y="-34" width="68" height="68" fill="none" stroke="#b45309" strokeWidth="3.5" />
-        <rect x="-34" y="-34" width="68" height="68" fill="none" stroke="#b45309" strokeWidth="3.5" transform="rotate(45)" />
-        <path d="M0 -34 L7 -13 L7 13 L0 34 L-7 13 L-7 -13 Z" fill="#eab308" opacity=".9" />
-      </g>
-
-      {/* game name */}
-      <text
-        x="100"
-        y="42"
-        textAnchor="middle"
-        fontFamily="Cairo, sans-serif"
-        fontWeight="900"
-        fontSize="25"
-        fill="#ef4444"
-        letterSpacing="2"
-      >
-        L'MAFIA
-      </text>
-      <text
-        x="100"
-        y="62"
-        textAnchor="middle"
-        fontFamily="Cairo, sans-serif"
-        fontWeight="900"
-        fontSize="13"
-        fill="#eab308"
-        letterSpacing="7"
-      >
-        D'LHOUMA
-      </text>
-      <text
-        x="100"
-        y="186"
-        textAnchor="middle"
-        fontFamily="Cairo, sans-serif"
-        fontWeight="700"
-        fontSize="9.5"
-        fill="#a16207"
-        letterSpacing="3"
-      >
-        PASS &amp; PLAY
-      </text>
-    </svg>
+    <img
+      src="/img/card-back.png"
+      alt="L'Mafia d'L'Houma"
+      draggable={false}
+      className={`select-none object-cover ${className}`}
+    />
   )
 }

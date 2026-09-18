@@ -46,6 +46,8 @@ export interface GameState {
   players: Player[]
   nightStep: NightStep
   nightActions: NightActions
+  /** how many Eissaba (mafia) players — configurable in setup */
+  mafiaCount: number
   /** shuffled order (non-tellers only) in which cards are revealed */
   revealOrder: string[]
   /** the player index (in revealOrder) that must currently look */

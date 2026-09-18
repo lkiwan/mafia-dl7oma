@@ -7,7 +7,15 @@ import type { ReactNode } from 'react'
 export function GameTable({ children, className = '' }: { children: ReactNode; className?: string }) {
   return (
     <div className={`wood-frame relative w-full ${className}`}>
-      <div className="wood-table relative w-full aspect-[1/1.08] rounded-[46%] overflow-hidden">
+      <div
+        className="wood-table relative w-full aspect-[1/1.08] rounded-[46%] overflow-hidden"
+        style={{
+          backgroundImage: 'url(/img/table-bg.avif)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
         {/* warm lantern glow in the middle */}
         <div
           aria-hidden

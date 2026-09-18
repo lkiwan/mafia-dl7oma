@@ -8,6 +8,7 @@ import type {
   Role,
   VictoryFaction,
 } from './types'
+import { MIN_PLAYERS } from './types'
 
 export interface GameStore extends GameState {
   goHome: () => void
@@ -16,6 +17,7 @@ export interface GameStore extends GameState {
   removePlayer: (id: string) => void
   setPlayerName: (id: string, name: string) => void
   setTeller: (id: string) => void
+  setMafiaCount: (n: number) => void
   randomTeller: () => void
   startGame: () => void
   advanceToReveal: () => void
@@ -51,10 +53,13 @@ export function shuffle<T>(arr: readonly T[]): T[] {
   return a
 }
 
-/** Distribute roles: 2 Eissaba, 1 Boulis, 1 Tbib, rest Wlad L'Houma. */
-export function dealRoles(count: number): Role[] {
-  const roles: Role[] = ['EISSABA', 'EISSABA', 'BOULIS', 'TBIB']
-  for (let i = 0; i < count - 4; i++) roles.push('WLAD_LHOUMA')
+/** Distribute roles: mafiaCount Eissaba, 1 Boulis, 1 Tbib, rest Wlad L'Houma. */
+export function dealRoles(count: number, mafiaCount = 1): Role[] {
+  const mafia = Math.max(1, Math.min(mafiaCount, count - 2))
+  const roles: Role[] = []
+  for (let i = 0; i < mafia; i++) roles.push('EISSABA')
+  roles.push('BOULIS', 'TBIB')
+  for (let i = 0; i < count - mafia - 2; i++) roles.push('WLAD_LHOUMA')
   return shuffle(roles)
 }
 
@@ -63,6 +68,7 @@ const EMPTY_STATE: GameState = {
   players: [],
   nightStep: 'EISSABA',
   nightActions: { targetEissaba: null, targetBoulis: null, targetTbib: null },
+  mafiaCount: 1,
   revealOrder: [],
   revealIndex: 0,
   cardFaceUp: false,
@@ -77,7 +83,7 @@ const EMPTY_STATE: GameState = {
 }
 
 const base = (): GameState => {
-  const defaults = Array.from({ length: 7 }, (_, i) => ({
+  const defaults = Array.from({ length: 6 }, (_, i) => ({
     id: uid(),
     name: `لاعب ${i + 1}`,
     role: null,
@@ -103,6 +109,8 @@ export const useMafiaGame = create<GameStore>()((set, get) => ({
   addPlayer: (name) => {
     const trimmed = name.trim()
     if (!trimmed) return
+    const exists = get().players.some((p) => p.name.trim().toLowerCase() === trimmed.toLowerCase())
+    if (exists) return
     const p = get().players
     if (p.length >= 14) return
     set((s) => ({
@@ -114,14 +122,32 @@ export const useMafiaGame = create<GameStore>()((set, get) => ({
     set((s) => ({ players: s.players.filter((p) => p.id !== id) })),
 
   setPlayerName: (id, name) =>
-    set((s) => ({
-      players: s.players.map((p) => (p.id === id ? { ...p, name: name.trim() || p.name } : p)),
-    })),
+    set((s) => {
+      const trimmed = name.trim().toLowerCase()
+      const taken = s.players.some((p) => p.id !== id && p.name.trim().toLowerCase() === trimmed)
+      if (!trimmed || taken) return s
+      const final = name.trim()
+      return {
+        players: s.players.map((p) => (p.id === id ? { ...p, name: final } : p)),
+      }
+    }),
 
   setTeller: (id) =>
-    set((s) => ({
-      players: s.players.map((p) => ({ ...p, isTeller: p.id === id })),
-    })),
+    set((s) => {
+      const isNowTeller = s.players.find((p) => p.id === id)?.isTeller ?? false
+      // toggle: clicking the current teller unchoses them
+      return {
+        players: s.players.map((p) => ({ ...p, isTeller: isNowTeller ? false : p.id === id })),
+      }
+    }),
+
+  setMafiaCount: (n) =>
+    set((s) => {
+      const nonTellers = Math.max(1, s.players.length - 1)
+      const min = 1
+      const max = Math.max(1, nonTellers - 3)
+      return { mafiaCount: Math.min(max, Math.max(min, Math.round(n))) }
+    }),
 
   randomTeller: () =>
     set((s) => {
@@ -134,7 +160,7 @@ export const useMafiaGame = create<GameStore>()((set, get) => ({
 
   startGame: () => {
     const { players } = get()
-    if (players.length < 7) return
+    if (players.length < MIN_PLAYERS) return
     let roster = [...players]
     // ensure exactly one teller
     if (!roster.some((p) => p.isTeller)) {
@@ -142,7 +168,7 @@ export const useMafiaGame = create<GameStore>()((set, get) => ({
       roster = roster.map((p, i) => ({ ...p, isTeller: i === idx }))
     }
     const nonTellers = roster.filter((p) => !p.isTeller)
-    const roles = dealRoles(nonTellers.length)
+    const roles = dealRoles(nonTellers.length, get().mafiaCount)
     const roleById = new Map<string, Role>()
     nonTellers.forEach((p, i) => roleById.set(p.id, roles[i]))
     roster = roster.map((p) => (p.isTeller ? p : { ...p, role: roleById.get(p.id) ?? null }))
